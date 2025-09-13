@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - ReelCraft AI{% endblock %}
+
+{% block content %}
+    <div class="payment-container">
+        <div class="container">
+            <div class="payment-header">
+                <h1>Choose Your Plan</h1>
+                <p>Select the plan that works best for your video creation needs</p>
+            </div>
+            
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Normal</h3>
+                    <div class="price">₹200<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>10 video generations per month</li>
+                        <li>720p video resolution</li>
+                        <li>Basic music library</li>
+                        <li>5GB cloud storage</li>
+                        <li>Standard support</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('payment') }}">
+                        <input type="hidden" name="plan" value="normal">
+                        <button type="submit" class="pricing-btn">Select Plan</button>
+                    </form>
+                </div>
+
+                <div class="pricing-card popular">
+                    <div class="popular-badge">MOST POPULAR</div>
+                    <h3>Medium</h3>
+                    <div class="price">₹600<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>50 video generations per month</li>
+                        <li>1080p video resolution</li>
+                        <li>Full music library</li>
+                        <li>20GB cloud storage</li>
+                        <li>Priority support</li>
+                        <li>No watermarks</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('payment') }}">
+                        <input type="hidden" name="plan" value="medium">
+                        <button type="submit" class="pricing-btn">Select Plan</button>
+                    </form>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Advanced</h3>
+                    <div class="price">₹1000<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Unlimited video generations</li>
+                        <li>4K video resolution</li>
+                        <li>Premium music library</li>
+                        <li>100GB cloud storage</li>
+                        <li>24/7 priority support</li>
+                        <li>Advanced editing tools</li>
+                        <li>Commercial license</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('payment') }}">
+                        <input type="hidden" name="plan" value="advanced">
+                        <button type="submit" class="pricing-btn">Select Plan</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="payment-info">
+                <h3>Secure Payment</h3>
+                <p>Your payment information is encrypted and secure. We don't store your credit card details.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-cc-apple-pay"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .payment-container {
+        padding: 120px 0 80px;
+        min-height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .payment-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .payment-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        background: linear-gradient(90deg, #ff38c9, #8a2be2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .payment-header p {
+        color: #ccc;
+        font-size: 1.1rem;
+    }
+    
+    .pricing-cards {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-bottom: 60px;
+    }
+    
+    .pricing-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 40px 30px;
+        text-align: center;
+        width: 300px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        position: relative;
+    }
+    
+    .pricing-card.popular {
+        transform: scale(1.05);
+        border: 2px solid var(--accent);
+        background: rgba(138, 43, 226, 0.1);
+    }
+    
+    .popular-badge {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--accent);
+        color: white;
+        padding: 5px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .pricing-card h3 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+        color: var(--accent);
+    }
+    
+    .price {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, #ff38c9, #8a2be2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .price span {
+        font-size: 1rem;
+        color: #ccc;
+    }
+    
+    .pricing-features {
+        list-style: none;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+    
+    .pricing-features li {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        padding-left: 25px;
+    }
+    
+    .pricing-features li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+    }
+    
+    .pricing-features li:last-child {
+        border-bottom: none;
+    }
+    
+    .pricing-btn {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: white;
+        width: 100%;
+        padding: 12px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .pricing-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+    }
+    
+    .payment-info {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .payment-info h3 {
+        margin-bottom: 15px;
+        color: var(--light);
+    }
+    
+    .payment-info p {
+        color: #ccc;
+        margin-bottom: 20px;
+    }
+    
+    .payment-methods {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        font-size: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .pricing-cards {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .pricing-card.popular {
+            transform: scale(1);
+            margin: 20px 0;
+        }
+        
+        .pricing-card {
+            width: 100%;
+            max-width: 350px;
+        }
+    }
+    </style>
+{% endblock %}

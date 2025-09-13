@@ -1,0 +1,754 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-panel" id="admin-panel">
+    <div class="admin-header">
+        <div class="auth-logo">
+            <i class="fas fa-film"></i>
+            <span>ReelCraft AI Admin</span>
+        </div>
+        <div class="admin-nav">
+            <a href="#" class="admin-nav-link active" data-section="dashboard">Dashboard</a>
+            <a href="#" class="admin-nav-link" data-section="users">Users</a>
+            <a href="#" class="admin-nav-link" data-section="videos">Videos</a>
+            <a href="#" class="admin-nav-link" data-section="settings">Settings</a>
+            <a href="{{ url_for('logout') }}" id="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Dashboard Section -->
+        <div class="admin-section dashboard-section active">
+            <h2>Dashboard Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>{{ users|length }}</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-film"></i>
+                    <h3>{{ videos|length }}</h3>
+                    <p>Videos Created</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-music"></i>
+                    <h3>5</h3>
+                    <p>Music Styles</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3>4.8/5</h3>
+                    <p>Average Rating</p>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h3>Recent Activity</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <i class="fas fa-user-plus"></i>
+                        <div class="activity-content">
+                            <p>New user registered: John Doe</p>
+                            <span>2 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-video"></i>
+                        <div class="activity-content">
+                            <p>Video generated: Summer Vacation</p>
+                            <span>15 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div class="activity-content">
+                            <p>New subscription: Medium Plan</p>
+                            <span>1 hour ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="admin-section users-section">
+            <h2>User Management</h2>
+            
+            <div class="admin-tools">
+                <div class="search-box">
+                    <input type="text" placeholder="Search users..." id="user-search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button class="btn btn-primary" id="add-user-btn">
+                    <i class="fas fa-plus"></i> Add User
+                </button>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Videos</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td>{% if user.video_count %}{{ user.video_count }}{% else %}0{% endif %}</td>
+                        <td>
+                            <span class="status-badge {% if user.is_admin %}status-admin{% else %}status-active{% endif %}">
+                                {% if user.is_admin %}Admin{% else %}Active{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-sm view-user" data-id="{{ user.id }}">View</button>
+                            <button class="btn btn-danger btn-sm delete-user" data-id="{{ user.id }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button class="btn btn-sm"><i class="fas fa-chevron-left"></i></button>
+                <span class="page-info">Page 1 of 1</span>
+                <button class="btn btn-sm"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Videos Section -->
+        <div class="admin-section videos-section">
+            <h2>Video Management</h2>
+            
+            <div class="admin-tools">
+                <div class="filter-box">
+                    <select id="video-filter">
+                        <option value="all">All Videos</option>
+                        <option value="recent">Recent</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Creator</th>
+                        <th>Created</th>
+                        <th>Length</th>
+                        <th>Style</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for video in videos %}
+                    <tr>
+                        <td>{{ video.title if video.title else "Untitled Video" }}</td>
+                        <td>{{ video.user_name if video.user_name else "Unknown User" }}</td>
+                        <td>{{ video.created_at }}</td>
+                        <td>{{ video.length if video.length else "N/A" }}</td>
+                        <td>{{ video.music_style if video.music_style else "Not specified" }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm view-video" data-id="{{ video.id }}">View</button>
+                            <button class="btn btn-danger btn-sm delete-video" data-id="{{ video.id }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button class="btn btn-sm"><i class="fas fa-chevron-left"></i></button>
+                <span class="page-info">Page 1 of 1</span>
+                <button class="btn btn-sm"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="admin-section settings-section">
+            <h2>System Settings</h2>
+            
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3><i class="fas fa-key"></i> API Configuration</h3>
+                    <div class="setting-group">
+                        <label for="api-key">AI Video API Key</label>
+                        <div class="input-with-action">
+                            <input type="password" id="api-key" value="••••••••••••••••" readonly>
+                            <button class="btn btn-sm" id="reveal-api-key">Reveal</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Update API Key</button>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                    <div class="setting-group">
+                        <label for="login-attempts">Max Login Attempts</label>
+                        <input type="number" id="login-attempts" value="3" min="1" max="10">
+                    </div>
+                    <div class="setting-group">
+                        <label for="session-timeout">Session Timeout (minutes)</label>
+                        <input type="number" id="session-timeout" value="30" min="5" max="1440">
+                    </div>
+                    <button class="btn btn-primary">Save Security Settings</button>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-cog"></i> System Configuration</h3>
+                    <div class="setting-group">
+                        <label for="max-upload">Max Upload Size (MB)</label>
+                        <input type="number" id="max-upload" value="100" min="10" max="1024">
+                    </div>
+                    <div class="setting-group">
+                        <label for="video-quality">Default Video Quality</label>
+                        <select id="video-quality">
+                            <option value="720p">720p</option>
+                            <option value="1080p" selected>1080p</option>
+                            <option value="4k">4K</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary">Save System Settings</button>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-database"></i> Database Management</h3>
+                    <p>Current database size: 15.2 MB</p>
+                    <div class="setting-actions">
+                        <button class="btn btn-primary">Backup Database</button>
+                        <button class="btn btn-secondary">Optimize Database</button>
+                        <button class="btn btn-danger">Clear All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal" id="add-user-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New User</h3>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="add-user-form">
+                <div class="form-group">
+                    <label for="new-user-name">Full Name</label>
+                    <input type="text" id="new-user-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-user-email">Email Address</label>
+                    <input type="email" id="new-user-email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-user-password">Password</label>
+                    <input type="password" id="new-user-password" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-user-role">User Role</label>
+                    <select id="new-user-role" class="form-input">
+                        <option value="user">User</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary modal-close">Cancel</button>
+            <button class="btn btn-primary" id="submit-new-user">Add User</button>
+        </div>
+    </div>
+</div>
+
+<!-- User Detail Modal -->
+<div class="modal" id="user-detail-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>User Details</h3>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="user-detail-content">
+                <!-- User details will be loaded here via JavaScript -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary modal-close">Close</button>
+            <button class="btn btn-danger" id="edit-user-btn">Edit User</button>
+        </div>
+    </div>
+</div>
+
+<!-- Video Detail Modal -->
+<div class="modal" id="video-detail-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Video Details</h3>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="video-detail-content">
+                <!-- Video details will be loaded here via JavaScript -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary modal-close">Close</button>
+            <button class="btn btn-primary" id="download-video-btn">Download Video</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Admin navigation
+    const adminNavLinks = document.querySelectorAll('.admin-nav-link');
+    const adminSections = document.querySelectorAll('.admin-section');
+    
+    adminNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetSection = this.getAttribute('data-section');
+            
+            // Update active nav link
+            adminNavLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding section
+            adminSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.classList.contains(`${targetSection}-section`)) {
+                    section.classList.add('active');
+                }
+            });
+        });
+    });
+    
+    // Modal functionality
+    const modals = document.querySelectorAll('.modal');
+    const modalCloseButtons = document.querySelectorAll('.modal-close');
+    
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'block';
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    modalCloseButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            modal.style.display = 'none';
+        });
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e) {
+        modals.forEach(modal => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    
+    // Add user button
+    const addUserBtn = document.getElementById('add-user-btn');
+    if (addUserBtn) {
+        addUserBtn.addEventListener('click', function() {
+            openModal('add-user-modal');
+        });
+    }
+    
+    // View user buttons
+    const viewUserButtons = document.querySelectorAll('.view-user');
+    viewUserButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            // In a real app, you would fetch user details from the server
+            document.querySelector('.user-detail-content').innerHTML = `
+                <div class="user-detail-header">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4>User #${userId}</h4>
+                        <p>user${userId}@example.com</p>
+                    </div>
+                </div>
+                <div class="user-detail-stats">
+                    <div class="stat">
+                        <span class="stat-value">15</span>
+                        <span class="stat-label">Videos Created</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Subscription</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">2023-10-15</span>
+                        <span class="stat-label">Joined</span>
+                    </div>
+                </div>
+                <div class="user-detail-actions">
+                    <button class="btn btn-sm btn-danger">Reset Password</button>
+                    <button class="btn btn-sm btn-secondary">Login as User</button>
+                </div>
+            `;
+            openModal('user-detail-modal');
+        });
+    });
+    
+    // View video buttons
+    const viewVideoButtons = document.querySelectorAll('.view-video');
+    viewVideoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const videoId = this.getAttribute('data-id');
+            // In a real app, you would fetch video details from the server
+            document.querySelector('.video-detail-content').innerHTML = `
+                <div class="video-detail-header">
+                    <div class="video-thumbnail">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="video-info">
+                        <h4>Video #${videoId}</h4>
+                        <p>Created by User #${videoId}</p>
+                    </div>
+                </div>
+                <div class="video-detail-stats">
+                    <div class="stat">
+                        <span class="stat-value">45s</span>
+                        <span class="stat-label">Duration</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">1080p</span>
+                        <span class="stat-label">Resolution</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">25 MB</span>
+                        <span class="stat-label">Size</span>
+                    </div>
+                </div>
+                <div class="video-preview">
+                    <p>Video preview would be displayed here</p>
+                </div>
+            `;
+            openModal('video-detail-modal');
+        });
+    });
+    
+    // API key reveal
+    const revealApiKeyBtn = document.getElementById('reveal-api-key');
+    if (revealApiKeyBtn) {
+        revealApiKeyBtn.addEventListener('click', function() {
+            const apiKeyInput = document.getElementById('api-key');
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                apiKeyInput.value = '{{ api_key }}';  // This would be set by Flask
+                this.textContent = 'Hide';
+            } else {
+                apiKeyInput.type = 'password';
+                apiKeyInput.value = '••••••••••••••••';
+                this.textContent = 'Reveal';
+            }
+        });
+    }
+    
+    // Delete buttons
+    const deleteButtons = document.querySelectorAll('.delete-user, .delete-video');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemType = this.classList.contains('delete-user') ? 'user' : 'video';
+            const itemId = this.getAttribute('data-id');
+            
+            if (confirm(`Are you sure you want to delete this ${itemType}?`)) {
+                // In a real app, you would send a delete request to the server
+                console.log(`Deleting ${itemType} with ID: ${itemId}`);
+                // Simulate deletion
+                this.closest('tr').style.opacity = '0.5';
+                this.disabled = true;
+                this.textContent = 'Deleted';
+            }
+        });
+    });
+});
+</script>
+
+<style>
+/* Additional Admin-specific Styles */
+.admin-nav-link {
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.admin-nav-link.active {
+    background: rgba(138, 43, 226, 0.2);
+}
+
+.admin-tools {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.search-box {
+    position: relative;
+    width: 300px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--light);
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc;
+}
+
+.filter-box select {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--light);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.page-info {
+    color: #ccc;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background: rgba(35, 209, 96, 0.2);
+    color: #23d160;
+}
+
+.status-admin {
+    background: rgba(138, 43, 226, 0.2);
+    color: #8a2be2;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.settings-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-card h3 {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.setting-group {
+    margin-bottom: 15px;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.input-with-action {
+    display: flex;
+    gap: 10px;
+}
+
+.input-with-action input {
+    flex: 1;
+}
+
+.setting-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: rgba(18, 18, 18, 0.9);
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.modal-close {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.user-detail-header, .video-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.user-avatar, .video-thumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(138, 43, 226, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.user-detail-stats, .video-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.user-detail-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.video-preview {
+    height: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.recent-activity {
+    margin-top: 30px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item i {
+    font-size: 18px;
+    color: var(--accent);
+}
+
+.activity-content p {
+    margin: 0;
+}
+
+.activity-content span {
+    font-size: 12px;
+    color: #ccc;
+}
+</style>
+{% endblock %}
