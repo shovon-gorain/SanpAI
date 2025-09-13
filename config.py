@@ -5,4 +5,4 @@ class Config:
     DATABASE = 'database.db'
     UPLOAD_FOLDER = 'uploads'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
-    API_KEY = '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'  # Replace with your actual API key
+    API_KEY = 'syour api key'  # Replace with your actual API key
