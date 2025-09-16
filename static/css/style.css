@@ -820,7 +820,7 @@ footer {
 
 /* Admin Panel Styles */
 .admin-panel {
-    display: none;
+    display: grid;
     padding: 100px 20px;
     min-height: 100vh;
 }
